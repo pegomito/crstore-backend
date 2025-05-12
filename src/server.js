@@ -8,7 +8,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './models/index.js';
 
-// import Routes from './routes/index.js';
+import Routes from './routes/index.js';
 import { sequelize } from './config/postgres.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -33,10 +33,10 @@ app.use(morgan('combined', { stream: logStream }));
 app.use(express.json({ limit: '50mb'}));
 app.use(express.urlencoded({ extended: true, limit: '50mb'}));
 
-// Routes(app);
-// app.use((req, res) => {
-//   res.status(404).send('404 - página não encontrada');
-// })
+Routes(app);
+app.use((req, res) => {
+  res.status(404).send('404 - página não encontrada');
+})
 
 sequelize.authenticate()
   .then(() => {

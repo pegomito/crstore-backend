@@ -28,7 +28,8 @@ const User = sequelize.define(
       type: DataTypes.STRING(15),
       allowNull: false,
     },
-    password_hash: {
+    passwordHash: {
+      field: 'password_hash',
       type: DataTypes.STRING(255),
       allowNull: false,
     },
@@ -41,7 +42,7 @@ const User = sequelize.define(
       allowNull: false,
     },
     cart: {
-      type: DataTypes.JSON,
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     email: {

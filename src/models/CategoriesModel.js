@@ -2,30 +2,18 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../config/postgres.js";
 // import { token } from "morgan";
 
-const Coupon = sequelize.define(
-  'coupons',
+const Category = sequelize.define(
+  'categories',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,  
     },
-    code: {
+    name: {
       type: DataTypes.STRING(255),
       allowNull: false,
-    },
-    type: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    value: {
-      type: DataTypes.NUMERIC(10, 2),
-      allowNull: false,
-    },
-    uses: {
-      type: DataTypes.INTEGER(255),
-      allowNull: true,   
-    },
+    },  
   },
   {
     freezeTableName: true,
@@ -35,4 +23,4 @@ const Coupon = sequelize.define(
   }
 );
 
-export default Coupon;
+export default Category;

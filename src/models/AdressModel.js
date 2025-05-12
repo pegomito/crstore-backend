@@ -10,7 +10,8 @@ const Adress = sequelize.define(
       primaryKey: true,
       autoIncrement: true,  
     },
-    zip_code: {
+    zipCode: {
+      field: 'zip_code',
       type: DataTypes.STRING(255),
       allowNull: false,
     },
@@ -30,9 +31,10 @@ const Adress = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    number_forget: {
+    numberForget: {
+      field: 'number_forget',
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
