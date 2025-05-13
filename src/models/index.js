@@ -16,5 +16,4 @@
   // await Payment.sync({ force:true });
   // await Order.sync({ force:true });
   // await OrderProduct.sync({ force:true });
-
 })();
