@@ -9,8 +9,9 @@ export default (app) => {
   app.patch('/users/:id', userController.persist);
   app.delete('/users/:id', userController.destroy);
   app.post('/users/login', userController.login);
-  app.get('/users/token', loginMiddleware,userController.getDataByToken);
+  app.get('/users/token',loginMiddleware, userController.getDataByToken);
   app.post('/users/email', userController.enviarEmailRecover);
   app.post('/users/recuperar-senha', userController.trocarSenha);
 }
-// roleMiddleware GET('admin')
+// roleMiddleware GET('admin') 
+// ,

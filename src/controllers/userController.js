@@ -77,16 +77,14 @@ const create = async (corpo, res) => {
     } = corpo;
 
     const verficarEmail = await User.findOne({
-      where: {
-        email
-      } 
+      where: { email }
     });
 
-    if (verficarEmail) {  
-      return res.status(400).send('email ja cadastrado'); 
+    if (verficarEmail) {
+      return res.status(400).send('email ja cadastrado');
     }
 
-    const passwordHash = await bcrypt.hash(password,10);
+    const passwordHash = await bcrypt.hash(password, 10);
 
     const response = await User.create({
       name,
@@ -101,22 +99,22 @@ const create = async (corpo, res) => {
       recuperation
     });
 
-    return response;
+    return res.status(201).send({
+      message: 'Usuário criado com sucesso!',
+      data: response,
+    });
   } catch (error) {
-    throw new Error(error.message);
+    return res.status(500).send({
+      message: error.message,
+    });
   }
 };
-
 const persist = async (req, res) => {
   try {
     const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
 
     if (!id) {
-      const response = await create(req.body);
-      return res.status(201).send({
-        message: 'Usuário criado com sucesso!',
-        data: response,
-      });
+      return await create(req.body, res);
     }
 
     const response = await update(req.body, id);
@@ -208,20 +206,20 @@ const login = async (req, res) => {
 
 const getDataByToken = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1]; 
-
-    if (!token) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).send({
         message: 'token não informado'
-      })
+      });
     }
 
+    const token = authHeader.split(' ')[1];
     const user = jwt.verify(token, process.env.TOKEN_KEY);
 
     if (!user) {
       return res.status(401).send({
         message: 'token inválido'
-      })
+      });
     }
     
     const userId = user.idUser;
@@ -255,7 +253,6 @@ const enviarEmailRecover = async (req, res) => {
   const { email } = req.body;
 
   try {
-    // Verifica se o usuário existe
     const user = await User.findOne({
       where: { email },
     });

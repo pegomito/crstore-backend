@@ -9,8 +9,8 @@ async function sendMail(to, name, body, subject) {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.EMAIL_USER , // email
-            pass: process.env.EMAIL_PASS  // e senha de acesso
+            user: "b.pegoraro@unochapeco.edu.br" , 
+            pass: "gvie cieo svvn yyct" 
 
         }
     });
@@ -20,9 +20,10 @@ async function sendMail(to, name, body, subject) {
         subject,
         html: 
             `<h1>Olá ${name}</h1>
-            <p>${body}</p>
+            <p>${body}</p>  
             <p>Atenciosamente,</p>
-            <p>Equipe do cinema dos crias</p>
+            <p>Loja dos Guri
+            </p>
             `
     });
 
