@@ -6,4 +6,5 @@ export default (app) => {
   app.post("/products", productController.persist);
   app.patch("/products/:id", productController.persist);
   app.delete("/products/:id", productController.destroy);
+  
 }
