@@ -1,5 +1,6 @@
 import Product from "../models/ProductsModel.js";
 import Category from "../models/CategoriesModel.js";
+import uploadFile from "../utils/uploadFile.js";
 
 const get = async (req, res) => {
   try {
@@ -88,7 +89,29 @@ const persist = async (req, res) => {
     const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
 
     if (!id) {
-      const response = await create(req.body);
+      let imageUrl = null;
+      
+      // Se veio arquivo, faz upload
+      if (req.files && req.files.image) {
+        const uploadResult = await uploadFile(req.files.image, {
+          tipo: 'imagem',
+          tabela: 'products',
+          id: Date.now()
+        });
+        console.log('uploadResult:', uploadResult);
+        if (uploadResult.type === 'success') {
+          imageUrl = uploadResult.uploadPath.split('public').pop().replace(/\\/g, '/');
+          console.log('imageUrl:', imageUrl);
+        }
+      } else if (req.body.image) {
+        // Se veio link, usa o link
+        imageUrl = req.body.image;
+      }
+
+      const response = await Product.create({
+        ...req.body,
+        image: imageUrl
+      });
       return res.status(201).send({
         message: 'Produto criado com sucesso!',
         data: response,

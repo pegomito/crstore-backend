@@ -7,6 +7,7 @@ import cors from 'cors'
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './models/index.js';
+import fileUpload from 'express-fileupload';
 
 import Routes from './routes/index.js';
 import { sequelize } from './config/postgres.js';
@@ -32,7 +33,8 @@ app.use(cors(corsOptions));
 app.use(morgan('combined', { stream: logStream }));
 app.use(express.json({ limit: '50mb'}));
 app.use(express.urlencoded({ extended: true, limit: '50mb'}));
-
+app.use(fileUpload());
+app.use('/imagem', express.static(path.join(__dirname, '../public/imagem')));
 Routes(app);
 app.use((req, res) => {
   res.status(404).send('404 - página não encontrada');
