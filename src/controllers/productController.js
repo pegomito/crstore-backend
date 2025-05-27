@@ -91,7 +91,6 @@ const persist = async (req, res) => {
     if (!id) {
       let imageUrl = null;
       
-      // Se veio arquivo, faz upload
       if (req.files && req.files.image) {
         const uploadResult = await uploadFile(req.files.image, {
           tipo: 'imagem',
@@ -104,7 +103,6 @@ const persist = async (req, res) => {
           console.log('imageUrl:', imageUrl);
         }
       } else if (req.body.image) {
-        // Se veio link, usa o link
         imageUrl = req.body.image;
       }
 

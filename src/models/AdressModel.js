@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/postgres.js";
+import User from "./UsersModel.js";
 // import { token } from "morgan";
 
 const Adress = sequelize.define(
@@ -44,6 +45,17 @@ const Adress = sequelize.define(
     updatedAt: 'updated_at',
   }
 );
+
+Adress.belongsTo(User, {
+  as: 'user',
+  onUpdate: 'NO ACTION',
+  onDelete: 'NO ACTION', 
+  foreignKey: {
+    name:'idUser',
+    allowNull: false,
+    field: 'id_user'
+  }
+});
 
 export default Adress;
 
