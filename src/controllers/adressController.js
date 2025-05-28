@@ -1,143 +1,145 @@
-  import Adress from "../models/AdressModel.js";
+import Adress from "../models/AdressModel.js";
+import User from "../models/UsersModel.js";
 
-  const get = async (req, res) => {
-    try {
-      const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
-      if (!id) {
-        const response = await Adress.findAll({
-          order: [['id', 'desc']],
-        });
+const get = async (req, res) => {
+  try {
+    const userId = req.user.idUser; 
+    const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
 
-        return res.status(200).send({
-          message: 'Endereços encontrados',
-          data: response,
-        });
-      }
-
-      const response = await Adress.findOne({
-        where: {
-          id: id,
-        },
+    if (!id) {
+      const response = await Adress.findAll({
+        where: { idUser: userId },
+        order: [['id', 'desc']],
+        include: [{ model: User, as: 'user' }],
       });
-
-      if (!response) {
-        return res.status(404).send('Endereço não encontrado');
-      }
 
       return res.status(200).send({
-        message: 'Endereço encontrado',
+        message: 'Endereços encontrados',
         data: response,
       });
-    } catch (error) {
-      return res.status(500).send({
-        message: error.message,
-      });
     }
-  };
 
-  const update = async (corpo, id) => {
-    try {
-      const response = await Adress.findOne({
-        where: {
-          id,
-        },
-      });
+    const response = await Adress.findOne({
+      where: { id: id, idUser: userId },
+    });
 
-      if (!response) {
-        throw new Error('Endereço não encontrado');
-      }
-
-      Object.keys(corpo).forEach((item) => (response[item] = corpo[item]));
-      await response.save();
-
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
+    if (!response) {
+      return res.status(404).send('Endereço não encontrado');
     }
-  };
 
-  const create = async (corpo) => {
-    try {
-      const {
-        zipCode,
-        state,
-        city,
-        street,
-        district,
-        numberForget
-      } = corpo;
+    return res.status(200).send({
+      message: 'Endereço encontrado',
+      data: response,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
+};
 
-      const response = await Adress.create({
-        zipCode,
-        state,
-        city,
-        street,
-        district,
-        numberForget
-      });
+const create = async (corpo, userId) => {
+  try {
+    const {
+      zipCode,
+      state,
+      city,
+      street,
+      district,
+      numberForget,
+    } = corpo;
 
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
+    const response = await Adress.create({
+      zipCode,
+      state,
+      city,
+      street,
+      district,
+      numberForget,
+      idUser: userId, 
+    });
+
+    return response;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const update = async (corpo, id, userId) => {
+  try {
+    const response = await Adress.findOne({
+      where: { id, idUser: userId },
+    });
+
+    if (!response) {
+      throw new Error('Endereço não encontrado');
     }
-  };
 
-  const persist = async (req, res) => {
-    try {
-      const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
+    Object.keys(corpo).forEach((item) => (response[item] = corpo[item]));
+    await response.save();
 
-      if (!id) {
-        const response = await create(req.body);
-        return res.status(201).send({
-          message: 'Endereço criado com sucesso!',
-          data: response,
-        });
-      }
+    return response;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-      const response = await update(req.body, id);
+const persist = async (req, res) => {
+  try {
+    const userId = req.user.idUser;
+    const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
+
+    if (!id) {
+      const response = await create(req.body, userId);
       return res.status(201).send({
-        message: 'Endereço atualizado com sucesso!',
+        message: 'Endereço criado com sucesso!',
         data: response,
       });
-    } catch (error) {
-      return res.status(500).send({
-        message: error.message,
-      });
     }
-  };
 
-  const destroy = async (req, res) => {
-    try {
-      const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
-      if (!id) {
-        return res.status(400).send('Informe o ID do endereço');
-      }
+    const response = await update(req.body, id, userId);
+    return res.status(201).send({
+      message: 'Endereço atualizado com sucesso!',
+      data: response,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
+};
 
-      const response = await Adress.findOne({
-        where: {
-          id,
-        },
-      });
-
-      if (!response) {
-        return res.status(404).send('Endereço não encontrado');
-      }
-
-      await response.destroy();
-
-      return res.status(200).send({
-        message: 'Endereço excluído com sucesso',
-        data: response,
-      });
-    } catch (error) {
-      return res.status(500).send({
-        message: error.message,
-      });
+const destroy = async (req, res) => {
+  try {
+    const userId = req.user.idUser;
+    const id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
+    if (!id) {
+      return res.status(400).send('Informe o ID do endereço');
     }
-  };
 
-  export default {
-    get,
-    persist,
-    destroy,
-  };
+    const response = await Adress.findOne({
+      where: { id, idUser: userId },
+    });
+
+    if (!response) {
+      return res.status(404).send('Endereço não encontrado');
+    }
+
+    await response.destroy();
+
+    return res.status(200).send({
+      message: 'Endereço excluído com sucesso',
+      data: response,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+
+export default {
+  get,
+  persist,
+  destroy,
+};

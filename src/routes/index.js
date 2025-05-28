@@ -6,6 +6,7 @@ import productRoute from "./productRoute.js";
 import orderRoute from "./orderRoute.js";
 import order_productRoute from "./order_productRoute.js";
 import couponRoute from "./couponRoute.js";
+import cartRoute from "./cartRoute.js";
 
 function Routes(app) {
   userRoute(app);
@@ -16,6 +17,7 @@ function Routes(app) {
   orderRoute(app);
   order_productRoute(app);
   couponRoute(app);
+  cartRoute(app);
 }
 
 export default Routes;
